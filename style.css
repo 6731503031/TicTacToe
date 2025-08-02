@@ -14,7 +14,7 @@
     color: white;
     text-align: center;
     font-size: 40px;
-    margin-top: 10%;
+    margin-top: 5%;
 }
 
 .display {
@@ -100,4 +100,65 @@
     font-size: 18px;
     margin-left: 1em;
     cursor: pointer;
+}
+.user-info {
+    text-align: center;
+    margin: 1em 0;
+}
+
+.user-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 15px;
+    margin: 0 auto;
+    max-width: 300px;
+    backdrop-filter: blur(10px);
+}
+
+.user-picture {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 3px solid #09C372;
+    object-fit: cover;
+    display: none;
+}
+
+.user-name {
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.liff-status {
+    color: #FFD700;
+    font-size: 16px;
+    padding: 10px;
+    background-color: rgba(255, 215, 0, 0.1);
+    border-radius: 8px;
+    margin: 0 auto;
+    max-width: 300px;
+    text-align: center;
+}
+
+.login-button {
+    background-color: #00B900;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+    background-color: #009900;
 }
