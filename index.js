@@ -369,14 +369,14 @@ window.addEventListener('DOMContentLoaded', () => {
     openWindowButton.addEventListener('click', () => {
         if (liffInitialized) {
             // Open a new window with a URL (you can change this URL as needed)
-            const url = 'https://line.me';
+            const url = 'https://liff.line.me/2007866055-KVkZeq0J';
             liff.openWindow({
                 url: url,
                 external: true
             });
         } else {
             // Fallback for when LIFF is not initialized
-            window.open('https://line.me', '_blank');
+            window.open('https://liff.line.me/2007866055-KVkZeq0J', '_blank');
         }
     });
 });
