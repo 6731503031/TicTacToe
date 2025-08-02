@@ -84,11 +84,28 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     const changePlayer = () => {
-        playerDisplay.classList.remove(`player${currentPlayer}`);
-        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-        playerDisplay.innerText = currentPlayer;
-        playerDisplay.classList.add(`player${currentPlayer}`);
+    playerDisplay.classList.remove(`player${currentPlayer}`);
+    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+    playerDisplay.innerText = currentPlayer;
+    playerDisplay.classList.add(`player${currentPlayer}`);
+
+    if (currentPlayer === 'O' && isGameActive) {
+        setTimeout(aiMove, 500); // delay AI move for realism
     }
+    };
+
+    const aiMove = () => {
+    // Get all empty indexes
+    const emptyIndexes = board
+        .map((value, index) => value === '' ? index : null)
+        .filter(index => index !== null);
+
+    if (emptyIndexes.length === 0 || !isGameActive) return;
+
+    const randomIndex = emptyIndexes[Math.floor(Math.random() * emptyIndexes.length)];
+    const tile = tiles[randomIndex];
+    userAction(tile, randomIndex);
+    };
 
     const userAction = (tile, index) => {
         if(isValidAction(tile) && isGameActive) {
