@@ -1,6 +1,4 @@
-await liff.init({ liffId: "2007866055-KVkZeq0J" })
-
-window.addEventListener('DOMContentLoaded', () => {
+function setupGame(){
     const tiles = Array.from(document.querySelectorAll('.tile'));
     const playerDisplay = document.querySelector('.display-player');
     const resetButton = document.querySelector('#reset');
@@ -205,4 +203,34 @@ window.addEventListener('DOMContentLoaded', () => {
         difficulty = e.target.value;
         resetBoard();
     });
+}
+
+window.addEventListener('DOMContentLoaded', async () => {
+  await liff.init({ liffId: "2007866055-KVkZeq0J" });
+
+  const btnLogIn = document.getElementById("btnLogIn");
+  const btnLogOut = document.getElementById("btnLogOut");
+  const userDisplay = document.getElementById("userDisplay");
+
+  if (!liff.isInClient()) {
+    if (liff.isLoggedIn()) {
+      btnLogIn.style.display = "none";
+      btnLogOut.style.display = "inline-block";
+
+      const profile = await liff.getProfile();
+      userDisplay.innerText = `Hello, ${profile.displayName}!`;
+    } else {
+      btnLogIn.style.display = "inline-block";
+      btnLogOut.style.display = "none";
+    }
+  }
+
+  btnLogIn.onclick = () => liff.login();
+  btnLogOut.onclick = () => {
+    liff.logout();
+    window.location.reload();
+  };
+
+  // ✅ Initialize the game once everything is ready
+  setupGame();
 });
