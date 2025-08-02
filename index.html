@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script src="./index.js"></script>
     <title>Tic-Tac-Toe</title>
 </head>
 
@@ -39,47 +41,7 @@
             <option value="Medium">Medium</option>
             <option value="Hard" selected>Hard</option>
         </select>
-        <section class="login-controls">
-            <button id="btnLogIn" class="button">Log In with LINE</button>
-            <button id="btnLogOut" class="button" style="display:none;">Log Out</button>
-        </section>
-        <script>
-            const btnLogIn = document.getElementById("btnLogIn");
-            const btnLogOut = document.getElementById("btnLogOut");
 
-            document.addEventListener("DOMContentLoaded", async () => {
-                await liff.init({ liffId: "2007866055-KVkZeq0J" });
-
-                if (!liff.isInClient()) {
-                    if (liff.isLoggedIn()) {
-                        btnLogIn.style.display = "none";
-                        btnLogOut.style.display = "block";
-
-                        const profile = await liff.getProfile();
-                        const title = document.querySelector(".title h1");
-                        if (title && profile.displayName) {
-                            title.innerText = `Tic Tac Toe - Hello, ${profile.displayName}!`;
-                        }
-                    } else {
-                        btnLogIn.style.display = "block";
-                        btnLogOut.style.display = "none";
-                    }
-
-                    btnLogIn.onclick = () => {
-                        liff.login();
-                    };
-
-                    btnLogOut.onclick = () => {
-                        liff.logout();
-                        window.location.reload();
-                    };
-                } else {
-                    btnLogIn.style.display = "none";
-                    btnLogOut.style.display = "none";
-                }
-            });</script>
-        <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-        <script src="./index.js"></script>
     </main>
 </body>
 
