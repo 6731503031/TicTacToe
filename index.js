@@ -21,43 +21,40 @@ window.addEventListener('DOMContentLoaded', async () => {
     const loginBtn = document.getElementById('liff-login');
     const logoutBtn = document.getElementById('liff-logout');
 
-    function updateLoginButtons() {
-  if (liff.isLoggedIn()) {
-    loginBtn.classList.add('hide');
-    logoutBtn.classList.remove('hide');
-  } else {
-    loginBtn.classList.remove('hide');
-    logoutBtn.classList.add('hide');
-    }
-    }
+    window.addEventListener('DOMContentLoaded', async () => {
+  const loginBtn = document.getElementById('liff-login');
+  const logoutBtn = document.getElementById('liff-logout');
 
-    loginBtn.addEventListener('click', () => {
-    liff.login();
-    });
-
-    logoutBtn.addEventListener('click', () => {
-    liff.logout();
-    window.location.reload(); // refresh to update UI after logout
-    });
-
-    // After LIFF init:
-    updateLoginButtons();
-
-    try {
+  try {
     await liff.init({ liffId });
 
-    if (liff.isLoggedIn()) {
-        const profile = await liff.getProfile();
-        console.log('User profile:', profile);
-        const titleSection = document.querySelector('.title h1');
-        titleSection.innerText = `Tic Tac Toe - Hello, ${profile.displayName}!`;
+    // Now LIFF is ready, update buttons
+    function updateLoginButtons() {
+      if (liff.isLoggedIn()) {
+        loginBtn.classList.add('hide');
+        logoutBtn.classList.remove('hide');
+      } else {
+        loginBtn.classList.remove('hide');
+        logoutBtn.classList.add('hide');
+      }
     }
-    // If NOT logged in, do nothing here — user will click Login button manually
-    } catch (error) {
-    console.error('LIFF init error:', error);
-    }
-    
 
+    updateLoginButtons();
+
+    if (liff.isLoggedIn()) {
+      const profile = await liff.getProfile();
+      const titleSection = document.querySelector('.title h1');
+      titleSection.innerText = `Tic Tac Toe - Hello, ${profile.displayName}!`;
+    }
+
+    loginBtn.addEventListener('click', () => liff.login());
+    logoutBtn.addEventListener('click', () => {
+      liff.logout();
+      window.location.reload();
+    });
+  } catch (error) {
+    console.error('LIFF init error:', error);
+  }
 
     /*
         Indexes within the board
@@ -340,5 +337,6 @@ window.addEventListener('DOMContentLoaded', async () => {
     difficultySelect.addEventListener('change', (e) => {
     difficulty = e.target.value;
     resetBoard();
+    });
     });
 });
