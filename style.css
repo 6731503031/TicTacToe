@@ -79,6 +79,14 @@
     background-color: #498AFB;
 }
 
+.exit-button {
+    background-color: #ff4757;
+}
+
+.exit-button:hover {
+    background-color: #ff3838;
+}
+
 .difficulty-select {
     background-color: #09C372;
     color: white;
