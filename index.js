@@ -2,6 +2,11 @@ window.addEventListener('DOMContentLoaded', () => {
     const tiles = Array.from(document.querySelectorAll('.tile'));
     const playerDisplay = document.querySelector('.display-player');
     const announcer = document.querySelector('.announcer');
+    const userProfile = document.getElementById('user-profile');
+    const userPicture = document.getElementById('user-picture');
+    const userName = document.getElementById('user-name');
+    const liffStatus = document.getElementById('liff-status');
+    const loginButton = document.getElementById('login-button');
 
     let board = ['', '', '', '', '', '', '', '', ''];
     let isPlayerTurn = true;
@@ -9,12 +14,78 @@ window.addEventListener('DOMContentLoaded', () => {
     let isGameActive = true;
     let vsAI = true;
     let difficulty = 'Hard';
-
+    let liffInitialized = false;
+    let userInfo = null;
 
     const PLAYERX_WON = 'PLAYERX_WON';
     const PLAYERO_WON = 'PLAYERO_WON';
     const TIE = 'TIE';
 
+    const initializeLiff = async () => {
+        try {
+            // Replace 'YOUR_LIFF_ID' with your actual LIFF ID
+            const liffId = '2007866055-KVkZeq0J'; // You need to replace this with your actual LIFF ID
+            
+            liffStatus.textContent = 'Initializing LIFF...';
+            
+            await liff.init({ liffId: liffId });
+            liffInitialized = true;
+            
+            if (liff.isLoggedIn()) {
+                await getUserProfile();
+            } else {
+                liffStatus.textContent = 'Please login to LINE';
+                loginButton.classList.remove('hide');
+                loginButton.addEventListener('click', () => {
+                    liff.login();
+                });
+            }
+        } catch (error) {
+            console.error('LIFF initialization failed:', error);
+            liffStatus.textContent = 'LIFF initialization failed. Playing as guest.';
+            setTimeout(() => {
+                liffStatus.style.display = 'none';
+            }, 3000);
+        }
+    };
+
+    // Get user profile from LIFF
+    const getUserProfile = async () => {
+        try {
+            liffStatus.textContent = 'Getting user profile...';
+            
+            userInfo = await liff.getProfile();
+            
+            // Display user information
+            userName.textContent = userInfo.displayName || 'LINE User';
+            if (userInfo.pictureUrl) {
+                userPicture.src = userInfo.pictureUrl;
+                userPicture.style.display = 'block';
+            }
+            
+            // Show user profile and hide status
+            userProfile.classList.remove('hide');
+            liffStatus.style.display = 'none';
+            
+            console.log('User profile:', userInfo);
+        } catch (error) {
+            console.error('Failed to get user profile:', error);
+            liffStatus.textContent = 'Failed to get user profile. Playing as guest.';
+            setTimeout(() => {
+                liffStatus.style.display = 'none';
+            }, 3000);
+        }
+    };
+
+    // Initialize LIFF when page loads
+    if (typeof liff !== 'undefined') {
+        initializeLiff();
+    } else {
+        liffStatus.textContent = 'LIFF SDK not loaded. Playing as guest.';
+        setTimeout(() => {
+            liffStatus.style.display = 'none';
+        }, 3000);
+    }
 
     /*
         Indexes within the board

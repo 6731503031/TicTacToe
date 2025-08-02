@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script src="./index.js"></script>
     <title>Tic-Tac-Toe</title>
 </head>
@@ -13,6 +14,14 @@
     <main class="background">
         <section class="title">
             <h1>Tic Tac Toe</h1>
+        </section>
+         <section class="user-info">
+            <div id="user-profile" class="user-profile hide">
+                <img id="user-picture" class="user-picture" src="" alt="User Picture">
+                <span id="user-name" class="user-name">Guest</span>
+            </div>
+            <div id="liff-status" class="liff-status">Initializing LIFF...</div>
+            <button id="login-button" class="login-button hide">Login to LINE</button>
         </section>
         <section class="display">
             Player <span class="display-player playerX">X</span>'s turn
