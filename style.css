@@ -94,3 +94,14 @@
     margin-left: 1em;
     cursor: pointer;
 }
+
+.difficulty-select {
+    background-color: #09C372;
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+    font-size: 18px;
+    margin-left: 1em;
+    cursor: pointer;
+}

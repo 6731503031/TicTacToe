@@ -9,6 +9,8 @@ window.addEventListener('DOMContentLoaded', () => {
     let currentPlayer = 'X';
     let isGameActive = true;
     let vsAI = true;
+    let difficulty = 'Hard';
+
 
     const PLAYERX_WON = 'PLAYERX_WON';
     const PLAYERO_WON = 'PLAYERO_WON';
@@ -60,7 +62,20 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     const announce = (type) => {
-        switch(type){
+    if (vsAI) {
+        switch (type) {
+            case PLAYERO_WON:
+                announcer.innerText = '😵‍💫 You Lose.';
+                break;
+            case PLAYERX_WON:
+                announcer.innerText = '🎉 You Win!';
+                break;
+            case TIE:
+                announcer.innerText = '🎭 It\'s a Tie!';
+                break;
+        }
+    } else {
+        switch (type) {
             case PLAYERO_WON:
                 announcer.innerHTML = 'Player <span class="playerO">O</span> Won';
                 break;
@@ -69,8 +84,11 @@ window.addEventListener('DOMContentLoaded', () => {
                 break;
             case TIE:
                 announcer.innerText = 'Tie';
+                break;
         }
-        announcer.classList.remove('hide');
+    }
+
+    announcer.classList.remove('hide');
     };
 
     const isValidAction = (tile) => {
@@ -101,51 +119,114 @@ window.addEventListener('DOMContentLoaded', () => {
     const aiMove = () => {
     if (!isGameActive) return;
 
+    let moveIndex;
+
+    if (difficulty === 'Easy') {
+        const emptyIndexes = board
+            .map((val, idx) => val === '' ? idx : null)
+            .filter(idx => idx !== null);
+        moveIndex = emptyIndexes[Math.floor(Math.random() * emptyIndexes.length)];
+
+    } else if (difficulty === 'Medium') {
+        moveIndex = getMediumMove();
+    } else if (difficulty === 'Hard') {
+        moveIndex = minimax(board, 'O').index;
+    }
+
+    makeAIMove(moveIndex);  
+    };
+
+    const getMediumMove = () => {
     // 1. Try to win
     for (let condition of winningConditions) {
         const [a, b, c] = condition;
         const values = [board[a], board[b], board[c]];
         if (values.filter(v => v === 'O').length === 2 && values.includes('')) {
-            const moveIndex = condition[values.indexOf('')];
-            makeAIMove(moveIndex);
-            return;
+            return condition[values.indexOf('')];
         }
     }
 
-    // 2. Try to block player X from winning
+    // 2. Try to block player X
     for (let condition of winningConditions) {
         const [a, b, c] = condition;
         const values = [board[a], board[b], board[c]];
         if (values.filter(v => v === 'X').length === 2 && values.includes('')) {
-            const moveIndex = condition[values.indexOf('')];
-            makeAIMove(moveIndex);
-            return;
+            return condition[values.indexOf('')];
         }
     }
 
-    // 3. Pick center if available
-    if (board[4] === '') {
-        makeAIMove(4);
-        return;
-    }
+    // 3. Pick center
+    if (board[4] === '') return 4;
 
-    // 4. Pick a corner if available
+    // 4. Pick a corner
     const corners = [0, 2, 6, 8].filter(i => board[i] === '');
     if (corners.length > 0) {
-        const moveIndex = corners[Math.floor(Math.random() * corners.length)];
-        makeAIMove(moveIndex);
-        return;
+        return corners[Math.floor(Math.random() * corners.length)];
     }
 
-    // 5. Pick any remaining empty tile
+    // 5. Pick any empty
     const emptyIndexes = board
         .map((val, idx) => val === '' ? idx : null)
         .filter(idx => idx !== null);
 
-    if (emptyIndexes.length > 0) {
-        const randomIndex = emptyIndexes[Math.floor(Math.random() * emptyIndexes.length)];
-        makeAIMove(randomIndex);
+    return emptyIndexes[Math.floor(Math.random() * emptyIndexes.length)];
+    };
+
+    const minimax = (newBoard, player) => {
+    const availSpots = newBoard
+        .map((val, i) => val === '' ? i : null)
+        .filter(i => i !== null);
+
+    // Check for terminal states
+    if (checkWinner(newBoard, 'X')) {
+        return { score: -10 };
+    } else if (checkWinner(newBoard, 'O')) {
+        return { score: 10 };
+    } else if (availSpots.length === 0) {
+        return { score: 0 };
     }
+
+    const moves = [];
+
+    for (let i = 0; i < availSpots.length; i++) {
+        const move = {};
+        move.index = availSpots[i];
+
+        newBoard[availSpots[i]] = player;
+
+        if (player === 'O') {
+            const result = minimax(newBoard, 'X');
+            move.score = result.score;
+        } else {
+            const result = minimax(newBoard, 'O');
+            move.score = result.score;
+        }
+
+        newBoard[availSpots[i]] = '';
+        moves.push(move);
+    }
+
+    // Choose best move
+    let bestMove;
+    if (player === 'O') {
+        let bestScore = -Infinity;
+        for (let i = 0; i < moves.length; i++) {
+            if (moves[i].score > bestScore) {
+                bestScore = moves[i].score;
+                bestMove = i;
+            }
+        }
+    } else {
+        let bestScore = Infinity;
+        for (let i = 0; i < moves.length; i++) {
+            if (moves[i].score < bestScore) {
+                bestScore = moves[i].score;
+                bestMove = i;
+            }
+        }
+    }
+
+    return moves[bestMove];
     };
 
     const makeAIMove = (index) => {
@@ -173,7 +254,13 @@ window.addEventListener('DOMContentLoaded', () => {
         isPlayerTurn = false;  // Block player input until AI finishes
         changePlayer();
     }
-};
+    };
+
+    const checkWinner = (boardState, player) => {
+    return winningConditions.some(condition => {
+        return condition.every(index => boardState[index] === player);
+    });
+    };
     
    const resetBoard = () => {
     board = ['', '', '', '', '', '', '', '', ''];
@@ -207,5 +294,11 @@ window.addEventListener('DOMContentLoaded', () => {
          vsAI = !vsAI;
          toggleButton.innerText = vsAI ? "Mode: Player vs AI" : "Mode: Player vs Player";
          resetBoard(); // Optional: restart game on mode change
+    });
+
+    const difficultySelect = document.querySelector('#difficulty-select');
+    difficultySelect.addEventListener('change', (e) => {
+    difficulty = e.target.value;
+    resetBoard();
     });
 });
