@@ -7,12 +7,12 @@ window.addEventListener('DOMContentLoaded', () => {
     const userName = document.getElementById('user-name');
     const liffStatus = document.getElementById('liff-status');
     const loginButton = document.getElementById('login-button');
+    const currentPlayerName = document.getElementById('current-player-name');
 
     let board = ['', '', '', '', '', '', '', '', ''];
     let isPlayerTurn = true;
     let currentPlayer = 'X';
     let isGameActive = true;
-    let vsAI = true;
     let difficulty = 'Hard';
     let liffInitialized = false;
     let userInfo = null;
@@ -132,32 +132,18 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     const announce = (type) => {
-        if (vsAI) {
-            switch (type) {
-                case PLAYERO_WON:
-                    announcer.innerText = '😵‍💫 Player Lose. 😵‍💫';
-                    break;
-                case PLAYERX_WON:
-                    announcer.innerText = '🎉 Player Win! 🎉';
-                    break;
-                case TIE:
-                    announcer.innerText = '🎭 It\'s a Tie! 🎭';
-                    break;
-            }
-        } else {
-            switch (type) {
-                case PLAYERO_WON:
-                    announcer.innerHTML = 'Player <span class="playerO">O</span> Won';
-                    break;
-                case PLAYERX_WON:
-                    announcer.innerHTML = 'Player <span class="playerX">X</span> Won';
-                    break;
-                case TIE:
-                    announcer.innerText = 'Tie';
-                    break;
-            }
+        const playerName = userInfo?.displayName || 'Player';
+        switch (type) {
+            case PLAYERO_WON:
+                announcer.innerText = `😵‍💫 ${playerName} Lose. 😵‍💫`;
+                break;
+            case PLAYERX_WON:
+                announcer.innerText = `🎉 ${playerName} Win! 🎉`;
+                break;
+            case TIE:
+                announcer.innerText = '🎭 It\'s a Tie! 🎭';
+                break;
         }
-
         announcer.classList.remove('hide');
     };
 
@@ -178,11 +164,17 @@ window.addEventListener('DOMContentLoaded', () => {
         currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
         playerDisplay.innerText = currentPlayer;
         playerDisplay.classList.add(`player${currentPlayer}`);
+        updateCurrentPlayerName();
 
-        if (vsAI && currentPlayer === 'O' && isGameActive) {
-            setTimeout(aiMove, 500);
-        } else if (!vsAI) {
-            isPlayerTurn = true; // allow next human player
+        if (currentPlayer === 'O' && isGameActive) {
+            setTimeout(aiMove, 500);}
+    };
+
+    const updateCurrentPlayerName = () => {
+        if (currentPlayer === 'X') {
+            currentPlayerName.innerText = userInfo?.displayName || 'Player';
+        } else {
+            currentPlayerName.innerText = 'AI';
         }
     };
 
@@ -342,9 +334,7 @@ window.addEventListener('DOMContentLoaded', () => {
             changePlayer(); // Always start with X
         }
 
-        if (!vsAI) {
-            isPlayerTurn = true; // Allow first player
-        }
+        updateCurrentPlayerName();
 
         tiles.forEach(tile => {
             tile.innerText = '';
@@ -358,12 +348,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    const toggleButton = document.querySelector('#toggle-mode');
-    toggleButton.addEventListener('click', () => {
-        vsAI = !vsAI;
-        toggleButton.innerText = vsAI ? "Mode: Player vs AI" : "Mode: Player vs Player";
-        resetBoard(); // Optional: restart game on mode change
-    });
+    updateCurrentPlayerName();
 
     const difficultySelect = document.querySelector('#difficulty-select');
     difficultySelect.addEventListener('change', (e) => {
