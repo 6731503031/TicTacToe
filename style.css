@@ -84,23 +84,13 @@
 }
 
 .toggle-mode {
-    background-color: #FF3860; /* same as reset */
+    background-color: #FF3860;
+    /* same as reset */
     color: white;
     padding: 8px;
     border-radius: 8px;
     border: none;
     font-size: 20px;
-    margin-left: 1em;
-    cursor: pointer;
-}
-
-.login-controls{
-    background-color: #09C372;
-    color: white;
-    padding: 8px;
-    border-radius: 8px;
-    border: none;
-    font-size: 18px;
     margin-left: 1em;
     cursor: pointer;
 }
