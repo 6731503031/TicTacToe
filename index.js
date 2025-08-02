@@ -99,22 +99,64 @@ window.addEventListener('DOMContentLoaded', () => {
     };
 
     const aiMove = () => {
+    if (!isGameActive) return;
+
+    // 1. Try to win
+    for (let condition of winningConditions) {
+        const [a, b, c] = condition;
+        const values = [board[a], board[b], board[c]];
+        if (values.filter(v => v === 'O').length === 2 && values.includes('')) {
+            const moveIndex = condition[values.indexOf('')];
+            makeAIMove(moveIndex);
+            return;
+        }
+    }
+
+    // 2. Try to block player X from winning
+    for (let condition of winningConditions) {
+        const [a, b, c] = condition;
+        const values = [board[a], board[b], board[c]];
+        if (values.filter(v => v === 'X').length === 2 && values.includes('')) {
+            const moveIndex = condition[values.indexOf('')];
+            makeAIMove(moveIndex);
+            return;
+        }
+    }
+
+    // 3. Pick center if available
+    if (board[4] === '') {
+        makeAIMove(4);
+        return;
+    }
+
+    // 4. Pick a corner if available
+    const corners = [0, 2, 6, 8].filter(i => board[i] === '');
+    if (corners.length > 0) {
+        const moveIndex = corners[Math.floor(Math.random() * corners.length)];
+        makeAIMove(moveIndex);
+        return;
+    }
+
+    // 5. Pick any remaining empty tile
     const emptyIndexes = board
-        .map((value, index) => value === '' ? index : null)
-        .filter(index => index !== null);
+        .map((val, idx) => val === '' ? idx : null)
+        .filter(idx => idx !== null);
 
-    if (emptyIndexes.length === 0 || !isGameActive) return;
+    if (emptyIndexes.length > 0) {
+        const randomIndex = emptyIndexes[Math.floor(Math.random() * emptyIndexes.length)];
+        makeAIMove(randomIndex);
+    }
+    };
 
-    const randomIndex = emptyIndexes[Math.floor(Math.random() * emptyIndexes.length)];
-    const tile = tiles[randomIndex];
-
+    const makeAIMove = (index) => {
+    const tile = tiles[index];
     tile.innerText = currentPlayer;
     tile.classList.add(`player${currentPlayer}`);
-    updateBoard(randomIndex);
+    updateBoard(index);
     handleResultValidation();
 
     if (isGameActive) {
-        isPlayerTurn = true; // Let player play again
+        isPlayerTurn = true;
         changePlayer();
     }
     };
