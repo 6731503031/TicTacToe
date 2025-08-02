@@ -8,6 +8,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const liffStatus = document.getElementById('liff-status');
     const loginButton = document.getElementById('login-button');
     const currentPlayerName = document.getElementById('current-player-name');
+    const exitButton = document.getElementById('exit-button');
 
     let board = ['', '', '', '', '', '', '', '', ''];
     let isPlayerTurn = true;
@@ -354,5 +355,14 @@ window.addEventListener('DOMContentLoaded', () => {
     difficultySelect.addEventListener('change', (e) => {
         difficulty = e.target.value;
         resetBoard();
+    });
+    
+    exitButton.addEventListener('click', () => {
+        if (liffInitialized && liff.isInClient()) {
+            liff.closeWindow();
+        } else {
+            // Fallback for when not in LINE app
+            window.close();
+        }
     });
 });
