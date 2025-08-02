@@ -1,7 +1,7 @@
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
+    // Your existing code...
     const tiles = Array.from(document.querySelectorAll('.tile'));
     const playerDisplay = document.querySelector('.display-player');
-    const resetButton = document.querySelector('#reset');
     const announcer = document.querySelector('.announcer');
 
     let board = ['', '', '', '', '', '', '', '', ''];
@@ -15,6 +15,24 @@ window.addEventListener('DOMContentLoaded', () => {
     const PLAYERX_WON = 'PLAYERX_WON';
     const PLAYERO_WON = 'PLAYERO_WON';
     const TIE = 'TIE';
+    // Initialize LIFF
+    const liffId = "2007866055-KVkZeq0J"; // Replace with your LIFF ID
+
+    try {
+        await liff.init({ liffId });
+        if (!liff.isLoggedIn()) {
+            liff.login();
+        } else {
+            const profile = await liff.getProfile();
+            console.log('User profile:', profile);
+            // Example: show user name in the title or display section
+            const titleSection = document.querySelector('.title h1');
+            titleSection.innerText = `Tic Tac Toe - Hello, ${profile.displayName}!`;
+        }
+    } catch (error) {
+        console.error('LIFF init error:', error);
+    }
+    
 
 
     /*
@@ -286,8 +304,6 @@ window.addEventListener('DOMContentLoaded', () => {
     tiles.forEach( (tile, index) => {
         tile.addEventListener('click', () => userAction(tile, index));
     });
-
-    resetButton.addEventListener('click', resetBoard);
 
     const toggleButton = document.querySelector('#toggle-mode');
         toggleButton.addEventListener('click', () => {
