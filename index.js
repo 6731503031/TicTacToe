@@ -5,6 +5,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const announcer = document.querySelector('.announcer');
 
     let board = ['', '', '', '', '', '', '', '', ''];
+    let isPlayerTurn = true;
     let currentPlayer = 'X';
     let isGameActive = true;
 
@@ -95,7 +96,6 @@ window.addEventListener('DOMContentLoaded', () => {
     };
 
     const aiMove = () => {
-    // Get all empty indexes
     const emptyIndexes = board
         .map((value, index) => value === '' ? index : null)
         .filter(index => index !== null);
@@ -104,34 +104,48 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const randomIndex = emptyIndexes[Math.floor(Math.random() * emptyIndexes.length)];
     const tile = tiles[randomIndex];
-    userAction(tile, randomIndex);
+
+    tile.innerText = currentPlayer;
+    tile.classList.add(`player${currentPlayer}`);
+    updateBoard(randomIndex);
+    handleResultValidation();
+
+    if (isGameActive) {
+        isPlayerTurn = true; // Let player play again
+        changePlayer();
+    }
     };
 
     const userAction = (tile, index) => {
-        if(isValidAction(tile) && isGameActive) {
-            tile.innerText = currentPlayer;
-            tile.classList.add(`player${currentPlayer}`);
-            updateBoard(index);
-            handleResultValidation();
-            changePlayer();
-        }
+    if (!isPlayerTurn || !isValidAction(tile) || !isGameActive) return;
+
+    tile.innerText = currentPlayer;
+    tile.classList.add(`player${currentPlayer}`);
+    updateBoard(index);
+    handleResultValidation();
+
+    if (isGameActive) {
+        isPlayerTurn = false;  // Block player input until AI finishes
+        changePlayer();
     }
+};
     
-    const resetBoard = () => {
-        board = ['', '', '', '', '', '', '', '', ''];
-        isGameActive = true;
-        announcer.classList.add('hide');
+   const resetBoard = () => {
+    board = ['', '', '', '', '', '', '', '', ''];
+    isGameActive = true;
+    announcer.classList.add('hide');
+    isPlayerTurn = true;
 
-        if (currentPlayer === 'O') {
-            changePlayer();
-        }
-
-        tiles.forEach(tile => {
-            tile.innerText = '';
-            tile.classList.remove('playerX');
-            tile.classList.remove('playerO');
-        });
+    if (currentPlayer === 'O') {
+        changePlayer(); // Switch to X
     }
+
+    tiles.forEach(tile => {
+        tile.innerText = '';
+        tile.classList.remove('playerX');
+        tile.classList.remove('playerO');
+    });
+    };
 
     tiles.forEach( (tile, index) => {
         tile.addEventListener('click', () => userAction(tile, index));
