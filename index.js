@@ -1,4 +1,4 @@
-function setupGame(){
+function setupGame() {
     const tiles = Array.from(document.querySelectorAll('.tile'));
     const playerDisplay = document.querySelector('.display-player');
     const resetButton = document.querySelector('#reset');
@@ -206,31 +206,35 @@ function setupGame(){
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
-  await liff.init({ liffId: "2007866055-KVkZeq0J" });
+    await liff.init({ liffId: "2007866055-KVkZeq0J" });
 
-  const btnLogIn = document.getElementById("btnLogIn");
-  const btnLogOut = document.getElementById("btnLogOut");
-  const userDisplay = document.getElementById("userDisplay");
+    const btnLogIn = document.getElementById("btnLogIn");
+    const btnLogOut = document.getElementById("btnLogOut");
+    const title = document.querySelector(".title h1");
 
-  if (!liff.isInClient()) {
-    if (liff.isLoggedIn()) {
-      btnLogIn.style.display = "none";
-      btnLogOut.style.display = "inline-block";
+    if (!liff.isInClient()) {
+        if (liff.isLoggedIn()) {
+            btnLogIn.style.display = "none";
+            btnLogOut.style.display = "block";
 
-      const profile = await liff.getProfile();
-      userDisplay.innerText = `Hello, ${profile.displayName}!`;
+            const profile = await liff.getProfile();
+            if (title && profile.displayName) {
+                title.innerText = `Tic Tac Toe - Hello, ${profile.displayName}!`;
+            }
+        } else {
+            btnLogIn.style.display = "block";
+            btnLogOut.style.display = "none";
+        }
+
+        btnLogIn.onclick = () => liff.login();
+        btnLogOut.onclick = () => {
+            liff.logout();
+            window.location.reload();
+        };
     } else {
-      btnLogIn.style.display = "inline-block";
-      btnLogOut.style.display = "none";
+        btnLogIn.style.display = "none";
+        btnLogOut.style.display = "none";
     }
-  }
-
-  btnLogIn.onclick = () => liff.login();
-  btnLogOut.onclick = () => {
-    liff.logout();
-    window.location.reload();
-  };
-
-  // ✅ Initialize the game once everything is ready
-  setupGame();
+    // ✅ Initialize the game once everything is ready
+    setupGame();
 });
