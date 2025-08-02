@@ -9,6 +9,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const loginButton = document.getElementById('login-button');
     const currentPlayerName = document.getElementById('current-player-name');
     const exitButton = document.getElementById('exit-button');
+    const openWindowButton = document.getElementById('open-window-button');
 
     let board = ['', '', '', '', '', '', '', '', ''];
     let isPlayerTurn = true;
@@ -364,6 +365,21 @@ window.addEventListener('DOMContentLoaded', () => {
         } else {
             // Fallback for when not in LINE app
             window.close();
+        }
+    });
+
+    // Open window button functionality
+    openWindowButton.addEventListener('click', () => {
+        if (liffInitialized) {
+            // Open a new window with a URL (you can change this URL as needed)
+            const url = 'https://line.me';
+            liff.openWindow({
+                url: url,
+                external: true
+            });
+        } else {
+            // Fallback for when LIFF is not initialized
+            window.open('https://line.me', '_blank');
         }
     });
 });

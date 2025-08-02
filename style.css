@@ -87,6 +87,14 @@
     background-color: #ff3838;
 }
 
+.open-window-button {
+    background-color: #09C372;
+}
+
+.open-window-button:hover {
+    background-color: #07a35a;
+}
+
 .difficulty-select {
     background-color: #09C372;
     color: white;
