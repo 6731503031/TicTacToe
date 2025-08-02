@@ -1,3 +1,6 @@
+await liff.init({ liffId: "2007866055-KVkZeq0J" })
+
+
 window.addEventListener('DOMContentLoaded', () => {
     const tiles = Array.from(document.querySelectorAll('.tile'));
     const playerDisplay = document.querySelector('.display-player');
