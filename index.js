@@ -15,7 +15,6 @@ window.addEventListener('DOMContentLoaded', () => {
     let isPlayerTurn = true;
     let currentPlayer = 'X';
     let isGameActive = true;
-    let vsAI = true;
     let difficulty = 'Hard';
     
     // LIFF variables
@@ -145,34 +144,16 @@ window.addEventListener('DOMContentLoaded', () => {
     const announce = (type) => {
         const playerName = userInfo?.displayName || 'Player';
         
-        if (vsAI) {
-            switch (type) {
-                case PLAYERO_WON:
-                    announcer.innerText = `😵‍💫 ${playerName} Lose. 😵‍💫`;
-                    break;
-                case PLAYERX_WON:
-                    announcer.innerText = `🎉 ${playerName} Win! 🎉`;
-                    break;
-                case TIE:
-                    announcer.innerText = '🎭 It\'s a Tie! 🎭';
-                    break;
-            }
-        } else {
-            // For Player vs Player mode, we'll use the names based on who's playing
-            const player1Name = userInfo?.displayName || 'Player 1';
-            const player2Name = 'Player 2'; // Could be enhanced to support second LIFF user
-            
-            switch (type) {
-                case PLAYERO_WON:
-                    announcer.innerHTML = `${player2Name} <span class="playerO">O</span> Won`;
-                    break;
-                case PLAYERX_WON:
-                    announcer.innerHTML = `${player1Name} <span class="playerX">X</span> Won`;
-                    break;
-                case TIE:
-                    announcer.innerText = 'Tie';
-                    break;
-            }
+        switch (type) {
+            case PLAYERO_WON:
+                announcer.innerText = `😵‍💫 ${playerName} Lose. 😵‍💫`;
+                break;
+            case PLAYERX_WON:
+                announcer.innerText = `🎉 ${playerName} Win! 🎉`;
+                break;
+            case TIE:
+                announcer.innerText = '🎭 It\'s a Tie! 🎭';
+                break;
         }
 
         announcer.classList.remove('hide');
@@ -199,27 +180,16 @@ window.addEventListener('DOMContentLoaded', () => {
         // Update the player name display
         updateCurrentPlayerName();
 
-        if (vsAI && currentPlayer === 'O' && isGameActive) {
+        if (currentPlayer === 'O' && isGameActive) {
             setTimeout(aiMove, 500);
-        } else if (!vsAI) {
-            isPlayerTurn = true; // allow next human player
         }
     };
 
     const updateCurrentPlayerName = () => {
-        if (vsAI) {
-            if (currentPlayer === 'X') {
-                currentPlayerName.innerText = userInfo?.displayName || 'Player';
-            } else {
-                currentPlayerName.innerText = 'AI';
-            }
+        if (currentPlayer === 'X') {
+            currentPlayerName.innerText = userInfo?.displayName || 'Player';
         } else {
-            // Player vs Player mode
-            if (currentPlayer === 'X') {
-                currentPlayerName.innerText = userInfo?.displayName || 'Player 1';
-            } else {
-                currentPlayerName.innerText = 'Player 2';
-            }
+            currentPlayerName.innerText = 'AI';
         }
     };
 
@@ -382,10 +352,6 @@ window.addEventListener('DOMContentLoaded', () => {
         // Update player name display for the starting player
         updateCurrentPlayerName();
 
-        if (!vsAI) {
-            isPlayerTurn = true; // Allow first player
-        }
-
         tiles.forEach(tile => {
             tile.innerText = '';
             tile.classList.remove('playerX');
@@ -398,13 +364,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    const toggleButton = document.querySelector('#toggle-mode');
-    toggleButton.addEventListener('click', () => {
-        vsAI = !vsAI;
-        toggleButton.innerText = vsAI ? "Mode: Player vs AI" : "Mode: Player vs Player";
-        resetBoard(); // Optional: restart game on mode change
-        updateCurrentPlayerName(); // Update player name display for new mode
-    });
+
 
     const difficultySelect = document.querySelector('#difficulty-select');
     difficultySelect.addEventListener('change', (e) => {

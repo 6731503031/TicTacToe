@@ -11,7 +11,6 @@ MiniGame with LINE LIFF Integration
 ### Features
 - Tic-Tac-Toe game with AI opponent
 - Multiple difficulty levels (Easy, Medium, Hard)
-- Player vs Player mode
 - LINE user authentication and profile display
 - User's display name and profile picture integration
 
