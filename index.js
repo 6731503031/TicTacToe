@@ -9,6 +9,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const userName = document.getElementById('user-name');
     const liffStatus = document.getElementById('liff-status');
     const loginButton = document.getElementById('login-button');
+    const currentPlayerName = document.getElementById('current-player-name');
 
     let board = ['', '', '', '', '', '', '', '', ''];
     let isPlayerTurn = true;
@@ -72,6 +73,9 @@ window.addEventListener('DOMContentLoaded', () => {
             // Show user profile and hide status
             userProfile.classList.remove('hide');
             liffStatus.style.display = 'none';
+            
+            // Update the current player name display
+            updateCurrentPlayerName();
             
             console.log('User profile:', userInfo);
         } catch (error) {
@@ -139,25 +143,31 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     const announce = (type) => {
+        const playerName = userInfo?.displayName || 'Player';
+        
         if (vsAI) {
             switch (type) {
                 case PLAYERO_WON:
-                    announcer.innerText = '😵‍💫 Player Lose. 😵‍💫';
+                    announcer.innerText = `😵‍💫 ${playerName} Lose. 😵‍💫`;
                     break;
                 case PLAYERX_WON:
-                    announcer.innerText = '🎉 Player Win! 🎉';
+                    announcer.innerText = `🎉 ${playerName} Win! 🎉`;
                     break;
                 case TIE:
                     announcer.innerText = '🎭 It\'s a Tie! 🎭';
                     break;
             }
         } else {
+            // For Player vs Player mode, we'll use the names based on who's playing
+            const player1Name = userInfo?.displayName || 'Player 1';
+            const player2Name = 'Player 2'; // Could be enhanced to support second LIFF user
+            
             switch (type) {
                 case PLAYERO_WON:
-                    announcer.innerHTML = 'Player <span class="playerO">O</span> Won';
+                    announcer.innerHTML = `${player2Name} <span class="playerO">O</span> Won`;
                     break;
                 case PLAYERX_WON:
-                    announcer.innerHTML = 'Player <span class="playerX">X</span> Won';
+                    announcer.innerHTML = `${player1Name} <span class="playerX">X</span> Won`;
                     break;
                 case TIE:
                     announcer.innerText = 'Tie';
@@ -186,10 +196,30 @@ window.addEventListener('DOMContentLoaded', () => {
         playerDisplay.innerText = currentPlayer;
         playerDisplay.classList.add(`player${currentPlayer}`);
 
+        // Update the player name display
+        updateCurrentPlayerName();
+
         if (vsAI && currentPlayer === 'O' && isGameActive) {
             setTimeout(aiMove, 500);
         } else if (!vsAI) {
             isPlayerTurn = true; // allow next human player
+        }
+    };
+
+    const updateCurrentPlayerName = () => {
+        if (vsAI) {
+            if (currentPlayer === 'X') {
+                currentPlayerName.innerText = userInfo?.displayName || 'Player';
+            } else {
+                currentPlayerName.innerText = 'AI';
+            }
+        } else {
+            // Player vs Player mode
+            if (currentPlayer === 'X') {
+                currentPlayerName.innerText = userInfo?.displayName || 'Player 1';
+            } else {
+                currentPlayerName.innerText = 'Player 2';
+            }
         }
     };
 
@@ -349,6 +379,9 @@ window.addEventListener('DOMContentLoaded', () => {
             changePlayer(); // Always start with X
         }
 
+        // Update player name display for the starting player
+        updateCurrentPlayerName();
+
         if (!vsAI) {
             isPlayerTurn = true; // Allow first player
         }
@@ -370,6 +403,7 @@ window.addEventListener('DOMContentLoaded', () => {
         vsAI = !vsAI;
         toggleButton.innerText = vsAI ? "Mode: Player vs AI" : "Mode: Player vs Player";
         resetBoard(); // Optional: restart game on mode change
+        updateCurrentPlayerName(); // Update player name display for new mode
     });
 
     const difficultySelect = document.querySelector('#difficulty-select');
