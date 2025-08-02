@@ -79,13 +79,8 @@
     background-color: #498AFB;
 }
 
-#reset {
-    background-color: #FF3860;
-}
-
 .toggle-mode {
     background-color: #FF3860;
-    /* same as reset */
     color: white;
     padding: 8px;
     border-radius: 8px;
