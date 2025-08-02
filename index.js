@@ -18,19 +18,43 @@ window.addEventListener('DOMContentLoaded', async () => {
     // Initialize LIFF
     const liffId = "2007866055-KVkZeq0J"; // Replace with your LIFF ID
 
+    const loginBtn = document.getElementById('liff-login');
+    const logoutBtn = document.getElementById('liff-logout');
+
+    function updateLoginButtons() {
+  if (liff.isLoggedIn()) {
+    loginBtn.classList.add('hide');
+    logoutBtn.classList.remove('hide');
+  } else {
+    loginBtn.classList.remove('hide');
+    logoutBtn.classList.add('hide');
+    }
+    }
+
+    loginBtn.addEventListener('click', () => {
+    liff.login();
+    });
+
+    logoutBtn.addEventListener('click', () => {
+    liff.logout();
+    window.location.reload(); // refresh to update UI after logout
+    });
+
+    // After LIFF init:
+    updateLoginButtons();
+
     try {
-        await liff.init({ liffId });
-        if (!liff.isLoggedIn()) {
-            liff.login();
-        } else {
-            const profile = await liff.getProfile();
-            console.log('User profile:', profile);
-            // Example: show user name in the title or display section
-            const titleSection = document.querySelector('.title h1');
-            titleSection.innerText = `Tic Tac Toe - Hello, ${profile.displayName}!`;
-        }
+    await liff.init({ liffId });
+
+    if (liff.isLoggedIn()) {
+        const profile = await liff.getProfile();
+        console.log('User profile:', profile);
+        const titleSection = document.querySelector('.title h1');
+        titleSection.innerText = `Tic Tac Toe - Hello, ${profile.displayName}!`;
+    }
+    // If NOT logged in, do nothing here — user will click Login button manually
     } catch (error) {
-        console.error('LIFF init error:', error);
+    console.error('LIFF init error:', error);
     }
     
 
