@@ -1,7 +1,6 @@
 window.addEventListener('DOMContentLoaded', () => {
     const tiles = Array.from(document.querySelectorAll('.tile'));
     const playerDisplay = document.querySelector('.display-player');
-    const resetButton = document.querySelector('#reset');
     const announcer = document.querySelector('.announcer');
 
     let board = ['', '', '', '', '', '', '', '', ''];
@@ -287,7 +286,6 @@ window.addEventListener('DOMContentLoaded', () => {
         tile.addEventListener('click', () => userAction(tile, index));
     });
 
-    resetButton.addEventListener('click', resetBoard);
 
     const toggleButton = document.querySelector('#toggle-mode');
     toggleButton.addEventListener('click', () => {
