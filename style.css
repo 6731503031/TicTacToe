@@ -95,12 +95,12 @@
 }
 
 .login-controls{
-    background-color: #FF3860; /* same as reset */
+    background-color: #09C372;
     color: white;
     padding: 8px;
     border-radius: 8px;
     border: none;
-    font-size: 20px;
+    font-size: 18px;
     margin-left: 1em;
     cursor: pointer;
 }
