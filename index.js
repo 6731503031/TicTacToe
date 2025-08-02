@@ -16,45 +16,43 @@ window.addEventListener('DOMContentLoaded', async () => {
     const PLAYERO_WON = 'PLAYERO_WON';
     const TIE = 'TIE';
     // Initialize LIFF
-    const liffId = "2007866055-KVkZeq0J"; // Replace with your LIFF ID
-
-    const loginBtn = document.getElementById('liff-login');
-    const logoutBtn = document.getElementById('liff-logout');
+    const liffId = "2007866055-KVkZeq0J"; // Use your actual LIFF ID
 
     window.addEventListener('DOMContentLoaded', async () => {
-  const loginBtn = document.getElementById('liff-login');
-  const logoutBtn = document.getElementById('liff-logout');
+    const loginBtn = document.getElementById("liff-login");
+    const logoutBtn = document.getElementById("liff-logout");
 
-  try {
-    await liff.init({ liffId });
+    try {
+        await liff.init({ liffId });
 
-    // Now LIFF is ready, update buttons
-    function updateLoginButtons() {
-      if (liff.isLoggedIn()) {
-        loginBtn.classList.add('hide');
-        logoutBtn.classList.remove('hide');
-      } else {
-        loginBtn.classList.remove('hide');
-        logoutBtn.classList.add('hide');
-      }
+        if (!liff.isInClient()) {
+            if (liff.isLoggedIn()) {
+                loginBtn.style.display = "none";
+                logoutBtn.style.display = "inline-block";
+
+                const profile = await liff.getProfile();
+                const title = document.querySelector(".title h1");
+                if (title && profile.displayName) {
+                    title.innerText = `Tic Tac Toe - Hello, ${profile.displayName}!`;
+                }
+            } else {
+                loginBtn.style.display = "inline-block";
+                logoutBtn.style.display = "none";
+            }
+        }
+
+        loginBtn.addEventListener('click', () => {
+            liff.login();
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            liff.logout();
+            window.location.reload();
+        });
+
+    } catch (err) {
+        console.error("LIFF init failed", err);
     }
-
-    updateLoginButtons();
-
-    if (liff.isLoggedIn()) {
-      const profile = await liff.getProfile();
-      const titleSection = document.querySelector('.title h1');
-      titleSection.innerText = `Tic Tac Toe - Hello, ${profile.displayName}!`;
-    }
-
-    loginBtn.addEventListener('click', () => liff.login());
-    logoutBtn.addEventListener('click', () => {
-      liff.logout();
-      window.location.reload();
-    });
-  } catch (error) {
-    console.error('LIFF init error:', error);
-  }
 
     /*
         Indexes within the board
