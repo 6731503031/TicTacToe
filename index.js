@@ -65,13 +65,13 @@ window.addEventListener('DOMContentLoaded', () => {
     if (vsAI) {
         switch (type) {
             case PLAYERO_WON:
-                announcer.innerText = '😵‍💫 You Lose.';
+                announcer.innerText = '😵‍💫 Player Lose. 😵‍💫';
                 break;
             case PLAYERX_WON:
-                announcer.innerText = '🎉 You Win!';
+                announcer.innerText = '🎉 Player Win! 🎉';
                 break;
             case TIE:
-                announcer.innerText = '🎭 It\'s a Tie!';
+                announcer.innerText = '🎭 It\'s a Tie! 🎭';
                 break;
         }
     } else {
