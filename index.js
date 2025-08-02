@@ -8,6 +8,7 @@ window.addEventListener('DOMContentLoaded', () => {
     let isPlayerTurn = true;
     let currentPlayer = 'X';
     let isGameActive = true;
+    let vsAI = true;
 
     const PLAYERX_WON = 'PLAYERX_WON';
     const PLAYERO_WON = 'PLAYERO_WON';
@@ -90,8 +91,10 @@ window.addEventListener('DOMContentLoaded', () => {
     playerDisplay.innerText = currentPlayer;
     playerDisplay.classList.add(`player${currentPlayer}`);
 
-    if (currentPlayer === 'O' && isGameActive) {
-        setTimeout(aiMove, 500); // delay AI move for realism
+    if (vsAI && currentPlayer === 'O' && isGameActive) {
+        setTimeout(aiMove, 500);
+    } else if (!vsAI) {
+        isPlayerTurn = true; // allow next human player
     }
     };
 
@@ -132,12 +135,16 @@ window.addEventListener('DOMContentLoaded', () => {
     
    const resetBoard = () => {
     board = ['', '', '', '', '', '', '', '', ''];
+    isPlayerTurn = true;
     isGameActive = true;
     announcer.classList.add('hide');
-    isPlayerTurn = true;
 
     if (currentPlayer === 'O') {
-        changePlayer(); // Switch to X
+        changePlayer(); // Always start with X
+    }
+
+    if (!vsAI) {
+        isPlayerTurn = true; // Allow first player
     }
 
     tiles.forEach(tile => {
@@ -152,4 +159,11 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     resetButton.addEventListener('click', resetBoard);
+
+    const toggleButton = document.querySelector('#toggle-mode');
+        toggleButton.addEventListener('click', () => {
+         vsAI = !vsAI;
+         toggleButton.innerText = vsAI ? "Mode: Player vs AI" : "Mode: Player vs Player";
+         resetBoard(); // Optional: restart game on mode change
+    });
 });
